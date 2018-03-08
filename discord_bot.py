@@ -97,13 +97,15 @@ async def on_message(message):
             \n- cooggerup botu hakkında öğrenmen gereken bütün bilgileri
             \n<#421086987571822592> kanalında bulabilirsin,
             \nlütfen ilk ziyaret edeceğin yer burası olsun daha sonra coogger topluluğunda ki
-            \nkullanıcılar ile takipleşmek için <#421044347199553546> kanalını ziyaret edebilirsin
+            \nkullanıcılar ile takipleşmek için <#421390753881653248> kanalını ziyaret edebilirsin
             \nbenim yani cooggerup botunun diğer hünerlerini
             \ngörmek istersen seni mutlaka <#420741092070129685> kanalına bekliyorum help yazman yeterli
             \nsponsor olan kişilerin kanalı hemen burası <#421085667653713930> sende sponsor olabilirsin
             \nbunun için <@403671940507631618>'e özelden mesaj at.
-            \nkeşfettiğin güzel içerikleri <#421086693215436820> bu kanaldan paylaşarak bizlere haber verebilirsin
-            \nlütfen paylaşmaya değer içerikler olsun.
+            \nsponsorlar keşfettiği güzel içerikler <#421393050904952842> bu kanaldan paylaşır ve yetkili kişiler
+            \ninceledikten sonra cooggerup botu çalıştırılır ve cooggerup desteği alır.
+            \ndeveloperlar burada toplanır <#421392663678550024> arge, tartışma vb eğer sende developer isen yine hakancelik'e
+            \nözelden yazabilirsin veya developer olan biri ile konuşabilirsin.
             \nve son olarak sohbet muhabbet aşkına <#419852543368101891> kanalına geçebilirsin
             \ntekrar görüşmek üzere.
             """
