@@ -16,13 +16,12 @@ class Upvote(Keys):
         for username in self.keys_username:
             try:
                 post.vote(weight,username)
-                voted[username] = {"status":True, "weight":weight, "not":"voted"}
+                yield {"username":username,"status":True, "weight":weight, "note":"voted"}
             except:
                 if username in voters_list:
-                    voted[username] = {"status":False, "weight":weight, "not":"already voted"}
+                    yield {"username":username,"status":False,"note":"already voted"}
                 else:
-                    voted[username] = {"status":False, "weight":weight ,"not":"Unknown"}
-        return voted
+                    yield {"username":username,"status":False,"note":"Unknown"}
 
     def voters(self, identify):
         author,permlink = identify.split("/")[4:]

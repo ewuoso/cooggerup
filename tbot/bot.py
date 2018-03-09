@@ -8,7 +8,6 @@ import re
 import json
 
 # bot
-from tbot.post import detail
 from tbot.money import Pending,price
 from tbot.transfer import Blocktrades,Koinim
 
@@ -19,31 +18,9 @@ class Text:
         self.text_follow = "follower count : {},\n\nfollowing count : {},\n\nthose who do not follow you : {},\n\nyou did not follow : {}"
         self.text_sbd = "{} amount of sbd in account {}"
         self.text_price = "BTC : {} USD,\nLTC : {} USD,\nSBD : {} USD,\nSTEEM : {} USD\n"
-        self.text_post = "pending payout value : {}\nnet_votes : {}\nvotes : {}\n"
         self.text_transfer = "Total value of BTC in your account\n- {} BTC,\nTotal value of money in your account\n- {} ₺,\nTotal value of pending payout post in your account\n- {} ₺,\nKoinim change rate\n{}"
-        self.text_start = """
-        \nHi I develop to learn fastly anything about steemit.com by @hakancelik some questions you may ask me
-        To again see this helper messages
-        1 - /help or /start\n
-        To see your post detail
-        2 - /post post_address\n
-        Everything you need to know about follower/following
-        3 - /follow steem_username\n
-        To see the amount of sbd in your account
-        4 - /sbd steem_username\n
-        To stock market prices
-        5 - /price\n
-        To learn pending payout
-        6 - /payout steem_username\n
-        To learn your money after convert your steem-dollar from\nblocktrades.us to bitcoin and transferring to koinim.com
-        7 - /transfer steem_username\n
-        """
 
 class Tbot(Text):
-
-    def post_detail(self, full_address):
-        detail_info = detail(full_address)
-        return self.text_post.format(detail_info["payout"],detail_info["net_votes"],detail_info["votes"])
 
     def check_username(self, username):
         if steem.lookup_account_names([username]) == [None]:
@@ -89,15 +66,15 @@ class Tbot(Text):
         cont = "\n {}\t:\t{}"
         money_title = payout_info.posts
         for i in money_title:
-            context += cont.format(i,money_title[i])
+            context += cont.format("{}$".format(i),money_title[i])
         sbd_in_account = str(payout_info.sbd_in_account)
-        usd_in_account = str(payout_info.usd_in_account)
+        #usd_in_account = str(payout_info.usd_in_account)
         total_sbd = str(payout_info.total_sbd)
-        total_usd = str(payout_info.total_usd)
-        context += cont.format("amount of SBD in your account ",sbd_in_account+" $")
-        context += cont.format("amount of USD in your account ",usd_in_account+" $")
-        context += cont.format("total SBD from in your account","{} $".format(total_sbd))
-        context += cont.format("total USD from in your account","{} $".format(total_usd))
+        #total_usd = str(payout_info.total_usd)
+        context += cont.format("Amount of SBD in your account ",sbd_in_account)
+        #context += cont.format("amount of USD in your account ",usd_in_account+" $")
+        context += cont.format("Total Payout","{}$".format(total_sbd))
+        #context += cont.format("total USD from in your account","{} $".format(total_usd))
         return context
 
     def transfer(self, username):
@@ -110,6 +87,5 @@ class Tbot(Text):
         hmuch_try = hmuch_btc_in_account * buy
         if hmuch_try != 0:
             hmuch_try = hmuch_try - 3
-        account = Pending.float_to_flot(hmuch_try)
-        total = Pending.float_to_flot(b.total() * buy)
-        return self.text_transfer.format(hmuch_btc_in_account,account, total, change_rate)
+        total = b.total() * buy
+        return self.text_transfer.format(hmuch_btc_in_account,hmuch_try, round(total,6), change_rate)
