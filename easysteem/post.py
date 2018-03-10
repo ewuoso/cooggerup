@@ -7,10 +7,10 @@ from datetime import datetime, timedelta
 steem = Steem(nodes=['https://api.steemit.com'])
 
 class PostDetail:
-
+    
     @staticmethod
     def pending_payout(username):
-        for post in steem.get_blog(username, 500, 500):
+        for post in steem.get_blog(username, 0, 500):
             post = Post(post["comment"])
             if post.is_main_post() and post.author == username:
                 if datetime(1970, 1, 1, 0, 0) == post.last_payout:
@@ -19,17 +19,12 @@ class PostDetail:
                         payout = (Amount(post.total_payout_value).amount + Amount(post.curator_payout_value).amount)
                     yield dict(
                     title = post.title,
-                    payout = payout
+                    payout = round(payout,4),
+                    sp = round(payout*0.15,4),
+                    sbd = round(payout*0.75/2,4),
                     )
-
-    @staticmethod
-    def general(url):
-        author,permlink = url.split("/")[4:]
-        post = steem.get_content(author.replace("@",""), permlink)
-        return dict(
-        payout = Amount(post["pending_payout_value"]).amount,
-        net_votes = post["net_votes"],
-        )
+                else:
+                    break
 
     @staticmethod
     def votes_by_rshares(url):
@@ -53,9 +48,3 @@ class PostDetail:
             rshares = str(float(vote["rshares"]) * reward_share * base)[:5],
             percent = vote["percent"] / 100,
             )
-
-" * 0.56 * 0.5 "
-
-# a = PostDetail.votes_by_rshares("https://steemit.com/esteem/@ornitorenk/badem-cicekleri-e306f1564df93")
-# for i in a:
-#     print(i)

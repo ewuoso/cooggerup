@@ -3,7 +3,7 @@ import requests
 import json
 
 # bot
-from tbot.money import Pending
+from easysteem.account import EasyAccount
 
 class Koinim():
 
@@ -21,14 +21,14 @@ class Koinim():
     def change_rate(self):
         return float(self.j["change_rate"])
 
-class Blocktrades(Pending):
+class Blocktrades(EasyAccount):
 
     def account(self):
         Amount = self.amount(sbd = self.sbd_in_account)
         return Amount
 
     def total(self):
-        Amount = self.amount(sbd = self.total_sbd)
+        Amount = self.amount(sbd = self.total_sbd())
         return Amount
 
     @staticmethod
