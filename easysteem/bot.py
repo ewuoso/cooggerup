@@ -33,8 +33,8 @@ class Tbot(Text):
         list_following = [] # senin takip ettklerin
         d_follow = []       # seni takip etmeyenler
         d_following = []    # senin takip ettiklerin
-        get_followers = steem.get_followers(username, 'abit', 'blog', 100)
-        get_following = steem.get_following(username, 'abit', 'blog', 100)
+        get_followers = steem.get_followers(username, 'abit', 'blog', 500)
+        get_following = steem.get_following(username, 'abit', 'blog', 500)
         follow_count = steem.get_follow_count(username)
         follower_count = follow_count["follower_count"]
         following_count = follow_count["following_count"]

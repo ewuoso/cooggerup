@@ -1,6 +1,4 @@
 import asyncio
-Bot_ID = "420911621846859776"
-
 # cooggerup bot
 from up.cooggerup import Upvote
 cooggerup = Upvote()
@@ -19,6 +17,10 @@ client = discord.Client()
 discord_user = discord.User()
 
 
+hakancelik_discord_id = "403671940507631618"
+sedatcelik_discord_id = "411540871960330241"
+Bot_ID = "420911621846859776"
+
 class DiscordBot:
 
     def __init__(self, message):
@@ -30,16 +32,16 @@ class DiscordBot:
         self.author = str(message.author.id)
 
     async def cooggerup(self):
-        if self.author != "403671940507631618":
-            await self.sendms(self.mschannel, "Bu özellik sadece hakancelik tarafından kullanılabilir. <@{}>".format(self.author))
-        if self.author == "403671940507631618":
+        if self.author == hakancelik_discord_id or self.author == sedatcelik_discord_id:
             await self.sendms(self.mschannel, 'Postunuz oylanıyor... ')
             count = 0
-            for upvote_result in cooggerup.upvote(weight = 100, identify = self.mscs[1]):
+            for upvote_result in cooggerup.upvote(identify = self.mscs[1]):
                 if upvote_result["status"]:
                     count += 1
                 await self.sendms(self.mschannel, upvote_result)
             await self.sendms(self.mschannel, "Oylama bitti {} kişi tarafından oy atıldı <@{}>".format(count,self.author))
+        else:
+            await self.sendms(self.mschannel, "Bu özellik sadece <@{}> ve <@{}> tarafından kullanılabilir. <@{}>".format(hakancelik_discord_id,sedatcelik_discord_id,self.author))
 
     async def follow(self):
         tmp = await self.sendms(self.mschannel, 'Takip bilgileriniz hazırlanıyor... ')
@@ -89,7 +91,7 @@ class DiscordBot:
         await self.sendms(self.mschannel, "sonuçlar bitti <@{}>".format(self.author))
 
     async def transfer(self):
-        tmp = await self.sendms(self.mschannel, 'Blocktrades ve koinim transver bilgileriniz... ')
+        tmp = await self.sendms(self.mschannel, 'Blocktrades ve koinim transfer bilgileriniz... ')
         context = Tbot.transfer(username = self.mscs[1])
         await self.editms(tmp, str(context)+" <@{}>".format(self.author))
 
@@ -104,7 +106,7 @@ class DiscordBot:
         \n- eğer coinlerini bloctras aracılığı ile bitcoine ve koinim aracılığı ile tl ye dönültüreceksen
         \n$transfer steemit_kullanıcı_adı şeklinde yazdığında sana kesintiler ile birlikte kaç tl alacağını
         \ngösterebilirim.
-        \n- $cooggerup steemit_post_adresi ile upvote atılıyor fakat şuan için bu özellik sadece kurucu tarafından
+        \n- $cooggerup steemit_post_adresi ile upvote atılıyor fakat şuan için bu özellik sadece kurucu ve sedatcelik tarafından
         \n belirli postlara yönelik kullanılmakta.
         """
         await self.sendms(self.mschannel, ms.format(self.author))

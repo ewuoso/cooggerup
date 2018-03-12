@@ -7,20 +7,22 @@ from up.keys import Keys
 class Upvote(Keys):
 
     def __init__(self):
-        self.s = Steem(keys = self.keys_list)
+        self.s = Steem(keys = self.keys)
 
-    def upvote(self, weight, identify):
+    def upvote(self, identify):
         post = Post(post = identify, steemd_instance = self.s)
         voters_list = self.voters(identify)
         voted = {}
-        for username in self.keys_username:
-            try:
-                post.vote(weight,username)
-                yield {"username":username,"status":True, "weight":weight, "note":"voted"}
-            except:
-                if username in voters_list:
-                    yield {"username":username,"status":False,"note":"already voted"}
-                else:
+        for account in self.accounts:
+            username = account["username"]
+            weight = float(account["weight"])
+            if username in voters_list:
+                yield {"username":username,"status":False,"note":"already voted"}
+            else:
+                try:
+                    post.vote(weight,username)
+                    yield {"username":username,"status":True, "weight":weight, "note":"voted"}
+                except:
                     yield {"username":username,"status":False,"note":"Unknown"}
 
     def voters(self, identify):
