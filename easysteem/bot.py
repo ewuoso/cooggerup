@@ -29,25 +29,15 @@ class Tbot(Text):
 
     def follow(self, username):
         self.check_username(username)
-        list_followers = [] # seni takip edenler
-        list_following = [] # senin takip ettklerin
-        d_follow = []       # seni takip etmeyenler
-        d_following = []    # senin takip ettiklerin
-        get_followers = steem.get_followers(username, 'abit', 'blog', 200)
-        get_following = steem.get_following(username, 'abit', 'blog', 200)
         follow_count = steem.get_follow_count(username)
         follower_count = follow_count["follower_count"]
         following_count = follow_count["following_count"]
-        for i in get_followers:
-            list_followers.append(i["follower"])
-        for i in get_following:
-            list_following.append(i["following"])
-        for i in list_following:
-            if i not in list_followers:
-                d_follow.append(i)
-        for i in list_followers:
-            if i not in list_following:
-                d_following.append(i)
+        get_followers = steem.get_followers(username, 'abit', 'blog',limit = 1000)
+        get_following = steem.get_following(username, 'abit', 'blog',limit = 100)
+        list_followers = [i["follower"] for i in get_followers]
+        list_following = [i["following"] for i in get_following]
+        d_follow = [i for i in list_following if i not in list_followers]
+        d_following = [i for i in list_followers if i not in list_following]
         context = self.text_follow.format(follower_count,following_count,d_follow,d_following)
         return context
 

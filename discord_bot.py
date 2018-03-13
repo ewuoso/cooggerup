@@ -5,15 +5,9 @@ from channels import Cooggerup, Coogger, Follow
 import discord
 import asyncio
 Client_ID = "token"
-client = discord.Client()
-discord_user = discord.User()
-#############
-hakancelik_discord_id = "403671940507631618"
-sedatcelik_discord_id = "411540871960330241"
 Bot_ID = "420911621846859776"
-# commands
+client = discord.Client()
 commands = ["cooggerup","follow","post","sbd","price","payout","transfer"]
-channels = ["Cooggerup"]
 
 async def cooggerup_help(message):
     ms = """

@@ -17,6 +17,9 @@ Tbot = Tbot()
 from up.cooggerup import Upvote
 cooggerup = Upvote()
 
+hakancelik_discord_id = "403671940507631618"
+sedatcelik_discord_id = "411540871960330241"
+
 class MainInit:
     def __init__(self, message, client):
         self.message = message
