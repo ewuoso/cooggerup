@@ -1,6 +1,6 @@
 class Keys:
     accounts = [
-    {"username":"username","weight":100,"posting_key":"key"},
+    {"username":"hakancelik","weight":75,"posting_key":"asdsa"},
     ]
     keys = []
     for account in accounts:
