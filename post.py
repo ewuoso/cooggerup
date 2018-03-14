@@ -1,16 +1,15 @@
-from steem import Steem
-from steem.account import Account
 from steem.post import Post
 from steem.amount import Amount
-from dateutil.parser import parse
-from datetime import datetime, timedelta
-steem = Steem(nodes=['https://api.steemit.com'])
+from datetime import datetime
+
+# settings
+from settings import STEEM
 
 class PostDetail:
-    
+
     @staticmethod
     def pending_payout(username):
-        for post in steem.get_blog(username, 0, 500):
+        for post in STEEM.get_blog(username, 0, 500):
             post = Post(post["comment"])
             if post.is_main_post() and post.author == username:
                 if datetime(1970, 1, 1, 0, 0) == post.last_payout:
@@ -30,11 +29,11 @@ class PostDetail:
     def votes_by_rshares(url):
         author,permlink = url.split("/")[4:]
         identify = author+"/"+permlink
-        reward_fund = steem.get_reward_fund()
+        reward_fund = STEEM.get_reward_fund()
         reward_balance = Amount(reward_fund["reward_balance"]).amount
         recent_claims = float(reward_fund["recent_claims"])
         reward_share = reward_balance / recent_claims
-        base = Amount(steem.get_current_median_history_price()["base"]).amount
+        base = Amount(STEEM.get_current_median_history_price()["base"]).amount
         post = Post(identify)
         votes = []
         for vote in post["active_votes"]:
@@ -43,8 +42,20 @@ class PostDetail:
             else:
                 break
         for vote in sorted(votes, key = lambda x: float(x["rshares"]), reverse=True):
-            yield dict(
-            voter = vote["voter"],
-            rshares = str(float(vote["rshares"]) * reward_share * base)[:5],
-            percent = vote["percent"] / 100,
-            )
+            rshares = float(vote["rshares"]) * reward_share * base
+            sbd_sp = PostDetail.calculate_sbd_sp(rshares)
+            if rshares != 0:
+                yield dict(
+                voter = vote["voter"],
+                rshares = round(rshares,4),
+                percent = vote["percent"] / 100,
+                sp = sbd_sp["sp"],
+                sbd = sbd_sp["sbd"],
+                )
+
+    @staticmethod
+    def calculate_sbd_sp(payout):
+        return dict(
+        sp = round(payout * 0.15,4),
+        sbd = round(payout * 0.75/2,4),
+        )

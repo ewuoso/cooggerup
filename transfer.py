@@ -3,7 +3,7 @@ import requests
 import json
 
 # bot
-from easysteem.account import EasyAccount
+from account import EasyAccount
 
 class Koinim():
 
