@@ -16,13 +16,14 @@ async def on_message(message):
     author = str(message.author.id)
     command = mscs[0].replace("$","")
     if author != BOT_ID:
-        if mscontent.startswith("$") and str(mschannel) == "cooggerup" or str(mschannel) == "test":
-            if command == "help":
-                await CLIENT.send_message(message.channel, settings.HELP_MS.format(str(message.author.id)))
-            else:
-                cooggerup_channel = Cooggerup(message = message, client = CLIENT)
-                if command in COMMANDS:
-                    await eval("cooggerup_channel."+command+"()")
+        if str(mschannel) == "cooggerup" or str(mschannel) == "test":
+            if mscontent.startswith("$"):
+                if command == "help":
+                    await CLIENT.send_message(message.channel, settings.HELP_MS.format(str(message.author.id)))
+                else:
+                    cooggerup_channel = Cooggerup(message = message, client = CLIENT)
+                    if command in COMMANDS:
+                        await eval("cooggerup_channel."+command+"()")
         elif str(mschannel) == "coogger":
             await Coogger(message = message, client = CLIENT).has()
         elif str(mschannel) == "takip":

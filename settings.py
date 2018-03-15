@@ -11,17 +11,17 @@ import discord
 
 class Keys:
     accounts = [
-    {"username":"hakancelik","weight":75,"posting_key":"key"},
+    {"username":"hakancelik","weight":50,"posting_key":"key"},
     ]
     keys = [account["posting_key"] for account in accounts]
     users = [account["username"] for account in accounts]
     weight = [account["weight"] for account in accounts]
 
-STEEM = Steem(nodes=['https://api.steemit.com'],keys = Keys().keys)
+STEEM = Steem(nodes=['https://api.steemit.com'],keys = Keys.keys)
 
 CLIENT = discord.Client()
 
-CLIENT_ID = "token"
+CLIENT_ID = ""
 
 BOT_ID = "420911621846859776"
 
@@ -97,7 +97,7 @@ HELP_MS = """
     \n- $transfer steemit_kullanıcı_adı eğer coinlerini bloctras aracılığı ile bitcoine ve koinim aracılığı ile tl ye dönültüreceksen şeklinde yazdığında sana kesintiler ile birlikte kaç tl alacağını gösterebilirim.
     \n- $calculate 40 şeklinde yazarsan sana $40 değerin %50/%50 olarak ayarlandığını varsayarak ödeme sonunda kaç sbd kaç sp
     \n alacagınızı gösterebilirim.
-    \n- $cooggerup steemit_post_adresi ile upvote atılıyor fakat şuan için bu özellik sadece kurucu ve sedatcelik tarafından
+    \n- $cooggerup steemit_post_adresi ile upvote atılıyor fakat şuan için bu özellik sadece hakancelik ve sedatcelik tarafından
     \n  belirli postlara yönelik kullanılmakta.
 """
 
@@ -119,19 +119,21 @@ WELCOME_MS = """
     \ntekrar görüşmek üzere.
 """
 
-COOGGERUP_REPLY = """
-    --------------------------------------------------------
-    - İçeriğiniz coogger projesi tarafından seçilmiş olup<strong> {} </strong>hesap
-    tarafından upvote atılmıştır içeriğinize upvote atan cooggerup botu hakkında ve
-    bu oluşum hakkında detaylı bilgileri aşağıdaki adrese tıklayarak öğrenebilirsiniz.
-    https://steemit.com/coogger/@coogger/cooggerup-nedir-ve-discord-kanalimiz
+COOGGERUP_REPLY = """------------------
+- İçeriğiniz coogger projesi tarafından seçilmiş olup<strong> {} </strong>hesap
+tarafından upvote atılmıştır içeriğinize upvote atan cooggerup botu hakkında ve
+bu oluşum hakkında detaylı bilgileri aşağıdaki adrese tıklayarak öğrenebilirsiniz.
+https://steemit.com/coogger/@coogger/cooggerup-nedir-ve-discord-kanalimiz
 
-    - Bizimle discord üzerinden iletişime geçebilirsiniz.
-    Discord : https://discord.gg/QC5B3GX
+- Bizimle discord üzerinden iletişime geçebilirsiniz.
+Discord : https://discord.gg/QC5B3GX
 
-    - Bir dahaki sefere sizi daha hızlı bulabilmemiz için coogger etiketini kullanabilirsiniz.
+- {}
 
-    - [Seçilen diğer içeriklere buradan ulaşabilirsiniz.](https://steemit.com/coogger/@coogger/{}-coogger-projesi-tarafindan-secilen-icerikler)
+- [Seçilen diğer içeriklere buradan ulaşabilirsiniz.](https://steemit.com/coogger/@coogger/{}-coogger-projesi-tarafindan-secilen-icerikler)
 
-    <center>Sende bu oluşumun bir parçası olabilir, destek verebilir veya alabilirsin; discord kanalımıza bekleriz. </center>
-""".format(len(Keys.users),TODAY)
+<center>Sende bu oluşumun bir parçası olabilir, destek verebilir veya alabilirsin; discord kanalımıza bekleriz. </center>
+"""
+COOGGERUP_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"Bir dahaki sefere sizi daha hızlı bulabilmemiz için coogger etiketini kullanabilirsiniz.",TODAY)
+
+COOGGERUP_TAG_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"coogger etiketini kullandığınız için teşekkürler.",TODAY)

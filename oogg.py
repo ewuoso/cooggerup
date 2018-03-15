@@ -29,9 +29,12 @@ class Oogg(Text):
     def check_username(self, username):
         if STEEM.lookup_account_names([username]) == [None]:
             return self.text_check_username.format(username)
+        return False
 
     def follow(self, username):
-        self.check_username(username)
+        chech = self.check_username(username)
+        if chech:
+            return chech
         follow_count = STEEM.get_follow_count(username)
         follower_count = follow_count["follower_count"]
         following_count = follow_count["following_count"]
@@ -45,7 +48,9 @@ class Oogg(Text):
         return context
 
     def sbd(self, username):
-        self.check_username(username)
+        chech = self.check_username(username)
+        if chech:
+            return chech
         sbd = STEEM.get_account(username)['sbd_balance']
         return self.text_sbd.format(username,sbd)
 
@@ -54,7 +59,9 @@ class Oogg(Text):
         return self.text_price.format(coin["BTC"],coin["LTC"],coin["SBD"],coin["STEEM"],coin["ETH"])
 
     def transfer(self, username):
-        self.check_username(username)
+        chech = self.check_username(username)
+        if chech:
+            return chech
         b = Blocktrades(username)
         k = Koinim()
         buy = k.buy()
@@ -84,7 +91,10 @@ class Oogg(Text):
                 except:
                     yield {"username":username,"status":False,"note":"Unknown"}
         if "coogger" not in Oogg.get_replies_list(post):
-            Oogg.reply(title = None,body = COOGGERUP_REPLY, author = "coogger", identifier = post.identifier)
+            if "coogger" in post.tags:
+                Oogg.reply(title = None,body = COOGGERUP_TAG_REPLY, author = "coogger", identifier = post.identifier)
+            else:
+                Oogg.reply(title = None,body = COOGGERUP_REPLY, author = "coogger", identifier = post.identifier)
 
     @staticmethod
     def voters(identify):

@@ -32,7 +32,7 @@ class Cooggerup(MainInit):
         if self.author in up_permission_ids:
             await self.sendms(self.mschannel, 'Postunuz oylanıyor... ')
             count = 0
-            for upvote_result in oogg.upvote(identify = self.mscs[1]):
+            for upvote_result in oogg.upvote(url = self.mscs[1]):
                 if upvote_result["status"]:
                     count += 1
                 await self.sendms(self.mschannel, upvote_result)
@@ -124,10 +124,10 @@ class Coogger(MainInit):
                     self.ms_is = True
                     break
             else:
-                await self.client.delete_message(self.message)
                 self.ms_is = True
                 break
         if self.ms_is:
+            await self.client.delete_message(self.message)
             await self.sendms(self.mschannel, self.ms.format(self.author))
 
 
@@ -148,4 +148,5 @@ class Follow(MainInit):
         else:
             self.ms_is = True
         if self.ms_is:
+            await self.client.delete_message(self.message)
             await self.sendms(self.mschannel, self.ms.format(self.author))
