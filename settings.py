@@ -21,11 +21,13 @@ STEEM = Steem(nodes=['https://api.steemit.com'],keys = Keys.keys)
 
 CLIENT = discord.Client()
 
-CLIENT_ID = ""
+CLIENT_ID = "token"
 
-BOT_ID = "420911621846859776"
+BOT_ID = "id"
 
-COMMANDS = ["cooggerup","follow","post","sbd","price","payout","transfer","help","calculate"]
+COMMANDS = ["follow","post","sbd","price","payout","transfer","help","calculate"] # coogger kanalı için komutlar
+
+POSTSHARE = ["dmania","dlive","dtube","utopian","dsound","zappl","steepshot"] # kanallar için
 
 UP_PERMISSION = [
     dict(
@@ -36,56 +38,7 @@ UP_PERMISSION = [
     )
 ]
 
-# CHANNELS_INFO = [
-#     dict(
-#     category = "genel", name = "sohbet",discord_id = "419852543368101891",
-#     ),
-#     dict(
-#     category = "genel", name = "mining",discord_id = "421980283131133952",
-#     ),
-#     dict(
-#     category = "sponsors", name = "sohbet",discord_id = "421085667653713930",
-#     ),
-#     dict(
-#     category = "sponsors", name = "arge",discord_id = "421393704411070484",
-#     ),
-#     dict(
-#     category = "bots", name = "cooggerup",discord_id = "420741092070129685",
-#     ),
-#     dict(
-#     category = "bots", name = "postup",discord_id = "421393050904952842",
-#     ),
-#     dict(
-#     category = "bots", name = "önerr",discord_id = "422821057318092803",
-#     ),
-#     dict(
-#     category = "bots", name = "test",discord_id = "421461920625983488",
-#     ),
-#     dict(
-#     category = "yardımlaşma", name = "post-paylaşımı",discord_id = "421391092890730497",
-#     ),
-#     dict(
-#     category = "yardımlaşma", name = "takip",discord_id = "421390753881653248",
-#     ),
-#     dict(
-#     category = "yardımlaşma", name = "kurasyon-avı",discord_id = "422695781082988544",
-#     ),
-#     dict(
-#     category = "yardımlaşma", name = "coogger",discord_id = "422746357472690189",
-#     ),
-#     dict(
-#     category = "developers", name = "arge",discord_id = "421392663678550024",
-#     ),
-#     dict(
-#     category = "developers", name = "sohbet",discord_id = "421396625936875531",
-#     ),
-#     dict(
-#     category = "yeni üyeler", name = "hoşgeldin",discord_id = "421044641429717010",
-#     ),
-#     dict(
-#     category = "yeni üyeler", name = "sss",discord_id = "421086987571822592",
-#     ),
-# ]
+
 
 HELP_MS = """
     \nMerhaba <@{}> sana yapabildiğim bir kaç özellikten bahsetmeme izin ver
@@ -97,8 +50,10 @@ HELP_MS = """
     \n- $transfer steemit_kullanıcı_adı eğer coinlerini bloctras aracılığı ile bitcoine ve koinim aracılığı ile tl ye dönültüreceksen şeklinde yazdığında sana kesintiler ile birlikte kaç tl alacağını gösterebilirim.
     \n- $calculate 40 şeklinde yazarsan sana $40 değerin %50/%50 olarak ayarlandığını varsayarak ödeme sonunda kaç sbd kaç sp
     \n alacagınızı gösterebilirim.
-    \n- $cooggerup steemit_post_adresi ile upvote atılıyor fakat şuan için bu özellik sadece hakancelik ve sedatcelik tarafından
+    \n- cooggerup kanalında $cooggerup steemit_post_adresi ile upvote atılıyor fakat şuan için bu özellik sadece hakancelik ve sedatcelik tarafından
     \n  belirli postlara yönelik kullanılmakta.
+    \n
+    \n made by @hakancelik
 """
 
 WELCOME_MS = """
@@ -134,6 +89,6 @@ Discord : https://discord.gg/QC5B3GX
 
 <center>Sende bu oluşumun bir parçası olabilir, destek verebilir veya alabilirsin; discord kanalımıza bekleriz. </center>
 """
-COOGGERUP_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"Bir dahaki sefere sizi daha hızlı bulabilmemiz için coogger etiketini kullanabilirsiniz.",TODAY)
+COOGGERUP_TAG_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"coogger etiketini kullanıp bizleri desteklediğiniz için teşekkürler.",TODAY)
 
-COOGGERUP_TAG_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"coogger etiketini kullandığınız için teşekkürler.",TODAY)
+COOGGERUP_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"Bir dahaki sefere sizi daha hızlı bulabilmemiz için coogger etiketini kullanabilirsiniz.",TODAY)

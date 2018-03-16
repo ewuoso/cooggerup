@@ -1,4 +1,4 @@
-from settings import STEEM, Keys, COOGGERUP_REPLY, TODAY
+from settings import STEEM, Keys, COOGGERUP_REPLY, COOGGERUP_TAG_REPLY, TODAY
 
 # python
 import requests
@@ -29,12 +29,9 @@ class Oogg(Text):
     def check_username(self, username):
         if STEEM.lookup_account_names([username]) == [None]:
             return self.text_check_username.format(username)
-        return False
 
     def follow(self, username):
-        chech = self.check_username(username)
-        if chech:
-            return chech
+        self.check_username(username)
         follow_count = STEEM.get_follow_count(username)
         follower_count = follow_count["follower_count"]
         following_count = follow_count["following_count"]
@@ -48,9 +45,7 @@ class Oogg(Text):
         return context
 
     def sbd(self, username):
-        chech = self.check_username(username)
-        if chech:
-            return chech
+        self.check_username(username)
         sbd = STEEM.get_account(username)['sbd_balance']
         return self.text_sbd.format(username,sbd)
 
@@ -59,9 +54,7 @@ class Oogg(Text):
         return self.text_price.format(coin["BTC"],coin["LTC"],coin["SBD"],coin["STEEM"],coin["ETH"])
 
     def transfer(self, username):
-        chech = self.check_username(username)
-        if chech:
-            return chech
+        self.check_username(username)
         b = Blocktrades(username)
         k = Koinim()
         buy = k.buy()

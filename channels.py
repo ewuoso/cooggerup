@@ -28,7 +28,7 @@ class MainInit:
 
 class Cooggerup(MainInit):
 
-    async def cooggerup(self):
+    async def run(self):
         if self.author in up_permission_ids:
             await self.sendms(self.mschannel, 'Postunuz oylanıyor... ')
             count = 0
@@ -39,6 +39,8 @@ class Cooggerup(MainInit):
             await self.sendms(self.mschannel, "Oylama bitti {} kişi tarafından oy atıldı <@{}>".format(count,self.author))
         else:
             await self.sendms(self.mschannel, "Bu özellik sadece yetkili kişiler tarafından kullanılabilir. <@{}>".format(self.author))
+
+class Coogger(MainInit):
 
     async def follow(self):
         tmp = await self.sendms(self.mschannel, 'Takip bilgileriniz hazırlanıyor... ')
@@ -100,7 +102,7 @@ class Cooggerup(MainInit):
         sbd_sp = PostDetail.calculate_sbd_sp(float(self.mscs[1]))
         await self.sendms(self.mschannel, "sonuçlar bitti <@{}> ${}.sbd   ${}.sp".format(self.author,sbd_sp["sbd"],sbd_sp["sp"]))
 
-class Coogger(MainInit):
+class Coogger_tags(MainInit):
 
     ms_is = False
     ms = """\nMerhaba <@{}> bu kanal sadece coogger etiketi bulunan postların
@@ -109,7 +111,7 @@ class Coogger(MainInit):
     \niseniz lütfen <#419852543368101891> kanalını kullanın.
     """
 
-    async def has(self):
+    async def run(self):
 
         for must_be_steemit_url in self.mscontent.split():
             if must_be_steemit_url.startswith("https://steemit.com/"):
@@ -120,7 +122,6 @@ class Coogger(MainInit):
                     self.ms_is = True
                     break
                 if "coogger" not in  Post(post = identify, steemd_instance = STEEM).tags:
-                    await self.client.delete_message(self.message)
                     self.ms_is = True
                     break
             else:
@@ -138,15 +139,47 @@ class Follow(MainInit):
     \nbir kanaldır örneğin:https://steemit.com/@coogger/ bu yüzden başka bir şey paylaşmaya çalışmayın, paylaşılan hesapları takip edin
     \nbaşkalarıda sizi takip etsin bu kadar kolay."""
 
-    async def is_user(self):
-        username = self.mscontent.split("@")
-        if len(username) == 2:
-            if STEEM.lookup_account_names([username[1]]) == [None]:
-                self.ms_is = False
+    async def run(self):
+        for must_be_user_url in self.mscontent.split():
+            if must_be_user_url.startswith("https://steemit.com/@"):
+                username = must_be_user_url.split("@")[1]
+                if STEEM.lookup_account_names([username]) == [None]:
+                    self.ms_is = False
+                    break
+                else:
+                    self.ms_is = True
+                    break
             else:
                 self.ms_is = True
-        else:
-            self.ms_is = True
+                break
         if self.ms_is:
             await self.client.delete_message(self.message)
             await self.sendms(self.mschannel, self.ms.format(self.author))
+
+class PostShare(MainInit):
+
+    ms_is = False
+    ms = """\nMerhaba <@{}> bu kanal sadece {} etiketi bulunan postların
+    \npaylaşılması ve yardımlaşması içindir, lütfen sevdiğiniz gönderi varsa
+    \nupvote atarak arkadaşlarınızı destekleyin onlarda sizi desteklesin
+    \nbakın bu kadar basit.
+    """
+
+    async def run(self,tag):
+        for must_be_steemit_url in self.mscontent.split():
+            if must_be_steemit_url.startswith("https://steemit.com/"):
+                try:
+                    author,permlink = must_be_steemit_url.split("/")[4:]
+                    identify = author+"/"+permlink
+                    if tag not in Post(post = identify, steemd_instance = STEEM).tags[0]:
+                        self.ms_is = True
+                        break
+                except:
+                    self.ms_is = True
+                    break
+            else:
+                self.ms_is = True
+                break
+        if self.ms_is:
+            await self.client.delete_message(self.message)
+            await self.sendms(self.mschannel, self.ms.format(self.author,tag))
