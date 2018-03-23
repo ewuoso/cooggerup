@@ -12,7 +12,6 @@ import discord
 class Keys:
     accounts = [
     {"username":"hakancelik","weight":100,"posting_key":"key"},
-
     ]
     keys = [account["posting_key"] for account in accounts]
     users = [account["username"] for account in accounts]

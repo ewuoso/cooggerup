@@ -4,16 +4,15 @@ from settings import STEEM, Keys, COOGGERUP_REPLY, COOGGERUP_TAG_REPLY
 import requests
 import re
 import json
+from datetime import datetime
 
 # bot
 from marketcap import price
-from transfer import Blocktrades,Koinim
-from post import PostDetail
-from account import EasyAccount
 
 #steem
 from steem.steem import Commit
 from steem.post import Post
+from steem.amount import Amount
 
 class Text:
     def __init__(self):
@@ -28,17 +27,6 @@ class Text:
 
 class Oogg(Text):
     "cooggerup botunun ana işlemleri"
-
-    def follow(self, username):
-        follow_count = STEEM.get_follow_count(username)
-        follower_count = follow_count["follower_count"]
-        following_count = follow_count["following_count"]
-        get_followers = [i["follower"] for i in STEEM.get_followers(username, 'abit', 'blog',limit = 1000)]
-        get_following = [i["following"] for i in STEEM.get_following(username, 'abit', 'blog',limit = 100)]
-        d_follow = set(get_followers) - set(get_following)
-        d_following = set(get_following) - set(get_followers)
-        context = self.text_follow.format(follower_count,following_count,d_follow,d_following)
-        return context
 
     def sbd(self, username):
         sbd = STEEM.get_account(username)['sbd_balance']
@@ -63,7 +51,6 @@ class Oogg(Text):
     @staticmethod
     def upvote(url):
         post = Post(post = url, steemd_instance = STEEM)
-        # title = post.permlink / post.title
         voters_list = Oogg.voters(url)
         voted = {}
         for account in Keys.accounts:
@@ -123,3 +110,134 @@ class Oogg(Text):
     @staticmethod
     def get_replies_list(post):
         return [str(i.author) for i in post.get_replies()]
+
+class EasyFollow:
+
+    def __init__(self,username):
+        self.username = username
+
+    def followers(self):
+        return [i["follower"] for i in STEEM.get_followers(self.username, 'abit', 'blog',limit = 1000)]
+
+    def following(self):
+        return [i["following"] for i in STEEM.get_following(self.username, 'abit', 'blog',limit = 100)]
+
+    def not_follow_you(self): # beni takip etmeyenler
+        return set(self.followers()) - set(self.following())
+
+    def not_follow(self): # benim takip etmediklerim
+        return set(self.following()) - set(self.followers())
+
+    def get_follower_count(self):
+        return self.follow_cout()["follower_count"]
+
+    def get_following_count(self):
+        return self.follow_cout()["following_count"]
+
+    def follow_cout(self):
+        return STEEM.get_follow_count(self.username)
+
+
+class EasyAccount:
+    def __init__(self,username):
+        self.username = username
+        self.price_sbd = float(price()["SBD"])
+        self.sbd_in_account = Amount(STEEM.get_account(username)['sbd_balance']).amount
+        self.usd_in_account = self.sbd_in_account * self.price_sbd
+
+    def total_sbd(self):
+        total_sbd = self.sbd_in_account
+        for pp in PostDetail.pending_payout(self.username):
+            total_sbd += pp["sbd"]
+        return total_sbd
+
+
+class PostDetail:
+
+    @staticmethod
+    def pending_payout(username):
+        for post in STEEM.get_blog(username, 0, 500):
+            post = Post(post["comment"])
+            if post.is_main_post() and post.author == username:
+                if datetime(1970, 1, 1, 0, 0) == post.last_payout:
+                    payout = Amount(post.pending_payout_value).amount
+                    if payout == 0:
+                        payout = (Amount(post.total_payout_value).amount + Amount(post.curator_payout_value).amount)
+                    yield dict(
+                    title = post.title,
+                    payout = round(payout,4),
+                    sp = round(payout*0.15,4),
+                    sbd = round(payout*0.75/2,4),
+                    )
+                else:
+                    break
+
+    @staticmethod
+    def votes_by_rshares(url):
+        author,permlink = url.split("/")[4:]
+        identify = author+"/"+permlink
+        reward_fund = STEEM.get_reward_fund()
+        reward_balance = Amount(reward_fund["reward_balance"]).amount
+        recent_claims = float(reward_fund["recent_claims"])
+        reward_share = reward_balance / recent_claims
+        base = Amount(STEEM.get_current_median_history_price()["base"]).amount
+        post = Post(identify)
+        votes = []
+        for vote in post["active_votes"]:
+            if len(votes) < 30:
+                votes.append(vote)
+            else:
+                break
+        for vote in sorted(votes, key = lambda x: float(x["rshares"]), reverse=True):
+            rshares = float(vote["rshares"]) * reward_share * base
+            sbd_sp = PostDetail.calculate_sbd_sp(rshares)
+            if rshares != 0:
+                yield dict(
+                voter = vote["voter"],
+                rshares = round(rshares,4),
+                percent = vote["percent"] / 100,
+                sp = sbd_sp["sp"],
+                sbd = sbd_sp["sbd"],
+                )
+
+    @staticmethod
+    def calculate_sbd_sp(payout):
+        return dict(
+        sp = round(payout * 0.15,4),
+        sbd = round(payout * 0.75/2,4),
+        )
+
+
+class Koinim():
+
+    def __init__(self):
+        btc_to_try_api = "https://koinim.com/ticker/"
+        r = requests.get(btc_to_try_api).text
+        self.j = json.loads(r)
+
+    def sell(self):
+        return float(self.j["sell"])
+
+    def buy(self):
+        return float(self.j["buy"])
+
+    def change_rate(self):
+        return float(self.j["change_rate"])
+
+
+class Blocktrades(EasyAccount):
+
+    def account(self):
+        Amount = self.amount(sbd = self.sbd_in_account)
+        return Amount
+
+    def total(self):
+        Amount = self.amount(sbd = self.total_sbd())
+        return Amount
+
+    @staticmethod
+    def amount(sbd = 1):
+        sbd_to_btc_api = "https://blocktrades.us/api/v2/estimate-output-amount?inputAmount={}&inputCoinType=sbd&outputCoinType=btc".format(sbd)
+        r = requests.get(sbd_to_btc_api).text
+        j = json.loads(r)
+        return float(j["outputAmount"])

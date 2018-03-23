@@ -9,10 +9,7 @@ up_permission_ids = [i["discord_id"] for i in UP_PERMISSION]
 import asyncio
 import re
 
-# first my bot telegram bot
-from post import PostDetail
-from account import EasyAccount
-from oogg import Oogg
+from oogg import Oogg,EasyFollow,EasyAccount,PostDetail
 oogg = Oogg()
 
 class MainInit:
@@ -43,12 +40,18 @@ class Cooggerup(MainInit):
 class Coogger(MainInit):
 
     async def follow(self):
-        tmp = await self.sendms(self.mschannel, 'Takip bilgileriniz hazırlanıyor... ')
-        context = oogg.follow(username = self.mscs[1])
-        await self.editms(tmp, str(context)+" <@{}>".format(self.author))
-
+        follow_class = EasyFollow(username = self.mscs[1])
+        follower_count = follow_class.get_follower_count()
+        following_count = follow_class.get_following_count()
+        not_follow_you = follow_class.not_follow_you()
+        not_follow = follow_class.not_follow()
+        context = "\nfollower_count : {}\nfollowing_count : {}\nnot_follow_you : {}\nnot_follow : {}\n".format(follower_count,following_count,not_follow_you,not_follow)
+        try:
+            await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
+        except:
+            context = "Fazla karakterden dolayı sonuç gösteremiyorum http://www.coogger.com/apps/steemitapp/search/?username={} bu adresi kullanarak sonuçları görüntüleyebilirsiniz.".format(self.mscs[1])
+            await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
     async def post(self):
-        await self.sendms(self.mschannel, 'Post bilgileriniz hazırlanıyor... ')
         count_rshares = 0.0
         for votes_result in PostDetail.votes_by_rshares(url = self.mscs[1]):
             count_rshares += float(votes_result["rshares"])
@@ -66,17 +69,14 @@ class Coogger(MainInit):
         await self.sendms(self.mschannel, "sonuçlar bitti <@{}>".format(self.author))
 
     async def sbd(self):
-        tmp = await self.sendms(self.mschannel, 'Hesabınızdaki toplam sbd miktarı.. ')
         context = oogg.sbd(username = self.mscs[1])
-        await self.editms(tmp, str(context)+" <@{}>".format(self.author))
+        await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
 
     async def price(self):
-        tmp = await self.sendms(self.mschannel, 'coinlerin dolar cinsinden değeri.. ')
         context = oogg.price()
-        await self.editms(tmp, str(context)+" <@{}>".format(self.author))
+        await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
 
     async def payout(self):
-        tmp = await self.sendms(self.mschannel, 'Ödeme bekleyen gönderi bilgileri... ')
         ea = EasyAccount(self.mscs[1])
         sbd_in_account = ea.sbd_in_account
         total_sbd = sbd_in_account
@@ -93,12 +93,10 @@ class Coogger(MainInit):
         await self.sendms(self.mschannel, "sonuçlar bitti <@{}>".format(self.author))
 
     async def transfer(self):
-        tmp = await self.sendms(self.mschannel, 'Blocktrades ve koinim transfer bilgileriniz... ')
         context = oogg.transfer(username = self.mscs[1])
-        await self.editms(tmp, str(context)+" <@{}>".format(self.author))
+        await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
 
     async def calculate(self):
-        tmp = await self.sendms(self.mschannel, 'Girdiğiniz değerin sbd ve steem powerı hesaplanıyor... ')
         sbd_sp = PostDetail.calculate_sbd_sp(float(self.mscs[1]))
         await self.sendms(self.mschannel, "sonuçlar bitti <@{}> ${}.sbd   ${}.sp".format(self.author,sbd_sp["sbd"],sbd_sp["sp"]))
 
