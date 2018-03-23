@@ -1,0 +1,3 @@
+steem
+python-binance
+discord.py

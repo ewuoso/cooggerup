@@ -14,11 +14,13 @@ async def on_message(message):
     mscontent = message.content.lower()
     mscs = mscontent.split()
     author = str(message.author.id)
+    if str(mschannel) == "hoşgeldin" and mscontent == "":
+        await CLIENT.send_message(mschannel, settings.WELCOME_MS.format(author))
     command = mscs[0].replace("$","")
     if author != BOT_ID:
-        if mscontent.startswith("$") and str(mschannel) == "coogger" or str(mschannel) == "test":
+        if mscontent.startswith("$") and str(mschannel) == "bot" or str(mschannel) == "test":
             if command == "help":
-                await CLIENT.send_message(message.channel, settings.HELP_MS.format(str(message.author.id)))
+                await CLIENT.send_message(mschannel, settings.HELP_MS.format(author))
             else:
                 cooggerup_channel = Coogger(message = message, client = CLIENT)
                 if command in COMMANDS:
@@ -26,11 +28,7 @@ async def on_message(message):
         elif str(mschannel) == "cooggerup":
             if command == "cooggerup":
                 await Cooggerup(message = message, client = CLIENT).run()
-        elif str(mschannel) == "hoşgeldin": # mesaj yazımına yetkisi olmaması gerek kimsenin bu kanala
-            await CLIENT.send_message(message.channel, settings.WELCOME_MS.format(str(message.author.id)))
         ############# kanal kuralları ###############
-        elif str(mschannel) == "coogger-etiketli-postlar":
-            await Coogger(message = message, client = CLIENT).run()
         elif str(mschannel) == "takip":
             await Follow(message = message, client = CLIENT).run()
         elif str(mschannel) in POSTSHARE:

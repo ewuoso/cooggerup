@@ -1,7 +1,7 @@
 # python
-from datetime import datetime
-TODAY = datetime.today()
-TODAY = str(TODAY.year)+"-"+str(TODAY.month)+"-"+str(TODAY.day)
+# from datetime import datetime
+# TODAY = datetime.today()
+# TODAY = str(TODAY.year)+"-"+str(TODAY.month)+"-"+str(TODAY.day)
 
 # steem
 from steem import Steem
@@ -11,7 +11,8 @@ import discord
 
 class Keys:
     accounts = [
-    {"username":"hakancelik","weight":50,"posting_key":"key"},
+    {"username":"hakancelik","weight":100,"posting_key":"key"},
+
     ]
     keys = [account["posting_key"] for account in accounts]
     users = [account["username"] for account in accounts]
@@ -21,24 +22,19 @@ STEEM = Steem(nodes=['https://api.steemit.com'],keys = Keys.keys)
 
 CLIENT = discord.Client()
 
-CLIENT_ID = "token"
+CLIENT_ID = "key"
 
-BOT_ID = "id"
+BOT_ID = "420911621846859776"
 
 COMMANDS = ["follow","post","sbd","price","payout","transfer","help","calculate"] # coogger kanalı için komutlar
 
-POSTSHARE = ["dmania","dlive","dtube","utopian","dsound","zappl","steepshot"] # kanallar için
+POSTSHARE = ["coogger","feronio","dmania","dlive","dtube","utopian","dsound","steepshot"] # kanallar için
 
 UP_PERMISSION = [
     dict(
     username = "hakancelik",discord_id = "403671940507631618",
     ),
-    dict(
-    username = "sedatcelik",discord_id = "11540871960330241",
-    )
 ]
-
-
 
 HELP_MS = """
     \nMerhaba <@{}> sana yapabildiğim bir kaç özellikten bahsetmeme izin ver
@@ -52,7 +48,6 @@ HELP_MS = """
     \n alacagınızı gösterebilirim.
     \n- cooggerup kanalında $cooggerup steemit_post_adresi ile upvote atılıyor fakat şuan için bu özellik sadece hakancelik ve sedatcelik tarafından
     \n  belirli postlara yönelik kullanılmakta.
-    \n
     \n made by @hakancelik
 """
 
@@ -63,15 +58,14 @@ WELCOME_MS = """
     \nlütfen ilk ziyaret edeceğin yer burası olsun daha sonra coogger topluluğunda ki
     \nkullanıcılar ile takipleşmek için <#421390753881653248> kanalını ziyaret edebilirsin
     \nbenim yani cooggerup botunun diğer hünerlerini
-    \ngörmek istersen seni mutlaka <#420741092070129685> kanalına bekliyorum $help yazman yeterli
+    \ngörmek istersen seni mutlaka <#424979369820160012> kanalına bekliyorum $help yazman yeterli
     \nsponsor olan kişilerin kanalı hemen burası <#421085667653713930> sende sponsor olabilirsin
     \nbunun için <@403671940507631618>'e özelden mesaj at.
-    \nsponsorlar keşfettiği güzel içerikler <#421393050904952842> bu kanaldan paylaşır ve yetkili kişiler
-    \ninceledikten sonra cooggerup botu çalıştırılır ve cooggerup desteği alır.
-    \ndeveloperlar burada toplanır <#421392663678550024> arge, tartışma vb eğer sende developer isen ve coogger'da rol olmak istersen yine hakancelik'e
+    \ndeveloperların arge, tartışma vb kanalları vardır eğer sende developer isen ve coogger'da rol olmak istersen yine hakancelik'e
     \nözelden yazabilirsin veya developer olan biri ile konuşabilirsin.
     \nve son olarak sohbet muhabbet aşkına <#419852543368101891> kanalına geçebilirsin
     \ntekrar görüşmek üzere.
+    \nBütün kanalların ne için açıldığı vb bilgiler kanal başlığında yazar.
 """
 
 COOGGERUP_REPLY = """------------------
@@ -85,10 +79,9 @@ Discord : https://discord.gg/QC5B3GX
 
 - {}
 
-- [Seçilen diğer içeriklere buradan ulaşabilirsiniz.](https://steemit.com/coogger/@coogger/{}-coogger-projesi-tarafindan-secilen-icerikler)
 
 <center>Sende bu oluşumun bir parçası olabilir, destek verebilir veya alabilirsin; discord kanalımıza bekleriz. </center>
 """
-COOGGERUP_TAG_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"coogger etiketini kullanıp bizleri desteklediğiniz için teşekkürler.",TODAY)
+COOGGERUP_TAG_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"coogger etiketini kullanıp bizleri desteklediğiniz için teşekkürler.")
 
-COOGGERUP_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"Bir dahaki sefere sizi daha hızlı bulabilmemiz için coogger etiketini kullanabilirsiniz.",TODAY)
+COOGGERUP_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"Bir dahaki sefere sizi daha hızlı bulabilmemiz için coogger etiketini kullanabilirsiniz.")

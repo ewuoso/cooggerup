@@ -52,7 +52,7 @@ class Coogger(MainInit):
         count_rshares = 0.0
         for votes_result in PostDetail.votes_by_rshares(url = self.mscs[1]):
             count_rshares += float(votes_result["rshares"])
-            votes_result = "{}  --  {}%  --  ${}  --  ${}.SP  --  ${}.SBD".format(
+            votes_result = "{} -- {}% -- ${} -- ${}.SP -- ${}.SBD".format(
             votes_result["voter"],
             votes_result["percent"],
             votes_result["rshares"],
@@ -102,52 +102,26 @@ class Coogger(MainInit):
         sbd_sp = PostDetail.calculate_sbd_sp(float(self.mscs[1]))
         await self.sendms(self.mschannel, "sonuçlar bitti <@{}> ${}.sbd   ${}.sp".format(self.author,sbd_sp["sbd"],sbd_sp["sp"]))
 
-class Coogger_tags(MainInit):
-
-    ms_is = False
-    ms = """\nMerhaba <@{}> bu kanal sadece coogger etiketi bulunan postların
-    \npaylaşılması ve yardımlaşması içindir ayrıca ben içerik seçerken buraya arada uğrarım
-    \nlütfen coogger etiketi olmayan içerik atmayın sohbet için mesaj atmış
-    \niseniz lütfen <#419852543368101891> kanalını kullanın.
-    """
-
-    async def run(self):
-
-        for must_be_steemit_url in self.mscontent.split():
-            if must_be_steemit_url.startswith("https://steemit.com/"):
-                try:
-                    author,permlink = must_be_steemit_url.split("/")[4:]
-                    identify = author+"/"+permlink
-                except:
-                    self.ms_is = True
-                    break
-                if "coogger" not in  Post(post = identify, steemd_instance = STEEM).tags:
-                    self.ms_is = True
-                    break
-            else:
-                self.ms_is = True
-                break
-        if self.ms_is:
-            await self.client.delete_message(self.message)
-            await self.sendms(self.mschannel, self.ms.format(self.author))
-
 
 class Follow(MainInit):
 
     ms_is = False
     ms = """\nMerhaba <@{}> bu kanal sadece steemit profil adresinizi paylaşabileceğiniz
-    \nbir kanaldır örneğin:https://steemit.com/@coogger/ bu yüzden başka bir şey paylaşmaya çalışmayın, paylaşılan hesapları takip edin
+    \nbir kanaldır örneğin:https://steemit.com/@coogger bu yüzden başka bir şey paylaşmaya çalışmayın, paylaşılan hesapları takip edin
     \nbaşkalarıda sizi takip etsin bu kadar kolay."""
 
     async def run(self):
-        for must_be_user_url in self.mscontent.split():
+        re_find = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', self.mscontent)
+        if re_find == []:
+            self.ms_is = True
+        for must_be_user_url in re_find:
             if must_be_user_url.startswith("https://steemit.com/@"):
                 username = must_be_user_url.split("@")[1]
                 if STEEM.lookup_account_names([username]) == [None]:
-                    self.ms_is = False
+                    self.ms_is = True
                     break
                 else:
-                    self.ms_is = True
+                    self.ms_is = False
                     break
             else:
                 self.ms_is = True
@@ -166,12 +140,15 @@ class PostShare(MainInit):
     """
 
     async def run(self,tag):
-        for must_be_steemit_url in self.mscontent.split():
+        re_find = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', self.mscontent)
+        if re_find == []:
+            self.ms_is = True
+        for must_be_steemit_url in re_find:
             if must_be_steemit_url.startswith("https://steemit.com/"):
                 try:
                     author,permlink = must_be_steemit_url.split("/")[4:]
                     identify = author+"/"+permlink
-                    if tag not in Post(post = identify, steemd_instance = STEEM).tags[0]:
+                    if tag not in Post(post = identify, steemd_instance = STEEM).tags:
                         self.ms_is = True
                         break
                 except:
