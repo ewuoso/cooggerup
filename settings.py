@@ -11,7 +11,8 @@ import discord
 
 class Keys:
     accounts = [
-    {"username":"hakancelik","weight":100,"posting_key":"key"},
+    {"username":"hakancelik","weight":75,"posting_key":"key"},
+
     ]
     keys = [account["posting_key"] for account in accounts]
     users = [account["username"] for account in accounts]
@@ -21,13 +22,13 @@ STEEM = Steem(nodes=['https://api.steemit.com'],keys = Keys.keys)
 
 CLIENT = discord.Client()
 
-CLIENT_ID = "key"
+CLIENT_ID = ""
 
-BOT_ID = "420911621846859776"
+BOT_ID = "426868837795758081"
 
-COMMANDS = ["follow","post","sbd","price","payout","transfer","help","calculate"] # coogger kanalı için komutlar
+COMMANDS = ["follow","post","sp","account","balance","price","payout","transfer","help","calculate"] # coogger kanalı için komutlar
 
-POSTSHARE = ["coogger","feronio","dmania","dlive","dtube","utopian","dsound","steepshot"] # kanallar için
+POSTSHARE = ["coogger","feronio","dmania","dlive","dtube","utopian-io","dsound","steepshot"] # kanallar için
 
 UP_PERMISSION = [
     dict(
@@ -37,15 +38,17 @@ UP_PERMISSION = [
 
 HELP_MS = """
     \nMerhaba <@{}> sana yapabildiğim bir kaç özellikten bahsetmeme izin ver
-    \n- $follow steemit_kullanıcı_adın  hesap takip bilgilerini gösterir.
-    \n- $post steemit_post_adresi post bilgilerini gösterir.
-    \n- $sbd steemit_kullanıcı_adı hesabındaki toplam sbd miktarını gösterir.
-    \n- $price coinlerin dolar cinsinden değerlerini gösterir.
-    \n- $payout steemit_kullanıcı_adı ödeme bekleyen gönderi bilgilerini gösterir.
-    \n- $transfer steemit_kullanıcı_adı eğer coinlerini bloctras aracılığı ile bitcoine ve koinim aracılığı ile tl ye dönültüreceksen şeklinde yazdığında sana kesintiler ile birlikte kaç tl alacağını gösterebilirim.
-    \n- $calculate 40 şeklinde yazarsan sana $40 değerin %50/%50 olarak ayarlandığını varsayarak ödeme sonunda kaç sbd kaç sp
+    \n- **$account steemit_kullanıcı_adın** Hesabın saygınlık puanını, steem power miktarını, yüzde kaç steem power'ın kaldığını, cüzdan bilgilerini gösterir.
+    \n- **$sp steemit_kullanıcı_adın** Hesabındaki steem power ve ne kadar gücünün kaldıgını görebilirsin.
+    \n- **$follow steemit_kullanıcı_adın**  hesap takip bilgilerini gösterir.
+    \n- **$post steemit_post_adresi** post bilgilerini gösterir.
+    \n- **$balance steemit_kullanıcı_adı** hesabındaki sbd, steem, steem power miktarını gösterir.
+    \n- **$price** coinlerin dolar cinsinden değerlerini gösterir.
+    \n- **$payout steemit_kullanıcı_adı** ödeme bekleyen gönderi bilgilerini gösterir.
+    \n- **$transfer steemit_kullanıcı_adı** eğer coinlerini bloctras aracılığı ile bitcoine ve koinim aracılığı ile tl ye dönültüreceksen şeklinde yazdığında sana kesintiler ile birlikte kaç tl alacağını gösterebilirim.
+    \n- **$calculate 40** şeklinde yazarsan sana $40 değerin %50/%50 olarak ayarlandığını varsayarak ödeme sonunda kaç sbd kaç sp
     \n alacagınızı gösterebilirim.
-    \n- cooggerup kanalında $cooggerup steemit_post_adresi ile upvote atılıyor fakat şuan için bu özellik sadece hakancelik ve sedatcelik tarafından
+    \n- cooggerup kanalında **$cooggerup steemit_post_adresi** ile upvote atılıyor fakat şuan için bu özellik sadece hakancelik ve sedatcelik tarafından
     \n  belirli postlara yönelik kullanılmakta.
     \n made by @hakancelik
 """
@@ -68,19 +71,33 @@ WELCOME_MS = """
 """
 
 COOGGERUP_REPLY = """------------------
-- İçeriğiniz coogger projesi tarafından seçilmiş olup<strong> {} </strong>hesap
-tarafından upvote atılmıştır içeriğinize upvote atan cooggerup botu hakkında ve
-bu oluşum hakkında detaylı bilgileri aşağıdaki adrese tıklayarak öğrenebilirsiniz.
-https://steemit.com/coogger/@coogger/cooggerup-nedir-ve-discord-kanalimiz
+### Teprikler içeriğiniz coogger projesi tarafından seçildi.
+> - İçeriğiniz coogger projesi tarafından seçilmiş olup<strong> {} </strong>hesap
+tarafından upvote atılmıştır bu oluşum hakkında detaylı bilgileri
+aşağıdaki adreslere tıklayarak öğrenebilirsiniz.
 
-- Bizimle discord üzerinden iletişime geçebilirsiniz.
-Discord : https://discord.gg/QC5B3GX
+----
+### Coogger projesi ile ilgili detaylı bilgi.
+
+- https://steemit.com/coogger/@coogger/v130
+ - http://www.coogger.com/@coogger/version/v130/
+
+---
+###  Diğer hizmetimiz olan steemitapp
+ - [steemitapp nedir nasil kullanilir](https://steemit.com/tr/@hakancelik/steemitapp-nedir-nasil-kullanilir)
+ - [coogger.com/apps/steemitapp](http://www.coogger.com/apps/steemitapp/)
+---
+- Bizimle [discord](https://discord.gg/QC5B3GX) üzerinden iletişime geçebilir ve **cooggerup** botunun yararlı özelliklerini burada kullanabilirsiniz.
 
 - {}
 
+- Bir sonraki paylaşımınızı [www.coogger.com](http://www.coogger.com) üzerinden yaparak bizlere daha fazla destek olabilirsiniz.
+<center>**Siz bizlere bizler ise sizlere destek olmalıyız.**</center>
 
-<center>Sende bu oluşumun bir parçası olabilir, destek verebilir veya alabilirsin; discord kanalımıza bekleriz. </center>
+<center>Sende bu oluşumun bir parçası olabilir, destek verebilir veya alabilirsin,  discord kanalımıza bekleriz. </center>
+
+----
 """
-COOGGERUP_TAG_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"coogger etiketini kullanıp bizleri desteklediğiniz için teşekkürler.")
+COOGGERUP_TAG_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"coogger etiketini kullanıp bizleri desteklediğiniz için teşekkürler")
 
 COOGGERUP_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"Bir dahaki sefere sizi daha hızlı bulabilmemiz için coogger etiketini kullanabilirsiniz.")

@@ -1,3 +1,4 @@
 steem
+easysteem
 python-binance
 discord.py

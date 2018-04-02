@@ -2,15 +2,15 @@
 from steem.post import Post
 
 # settings
-from settings import STEEM,UP_PERMISSION,COOGGERUP_REPLY
+from settings import STEEM,UP_PERMISSION,COOGGERUP_REPLY, Keys
 up_permission_ids = [i["discord_id"] for i in UP_PERMISSION]
 
 #python
 import asyncio
 import re
 
-from oogg import Oogg,EasyFollow,EasyAccount,PostDetail
-oogg = Oogg()
+# easy
+from easysteem.easysteem import Oogg, EasyFollow, EasyAccount, PostDetail
 
 class MainInit:
     def __init__(self, message, client):
@@ -27,15 +27,37 @@ class Cooggerup(MainInit):
 
     async def run(self):
         if self.author in up_permission_ids:
-            await self.sendms(self.mschannel, 'Postunuz oylanıyor... ')
+            await self.sendms(self.mschannel, '**Postunuz oylanıyor...**')
             count = 0
-            for upvote_result in oogg.upvote(url = self.mscs[1]):
+            for upvote_result in self.upvote(url = self.mscs[1]):
                 if upvote_result["status"]:
                     count += 1
                 await self.sendms(self.mschannel, upvote_result)
-            await self.sendms(self.mschannel, "Oylama bitti {} kişi tarafından oy atıldı <@{}>".format(count,self.author))
+            await self.sendms(self.mschannel, "- Oylama bitti **{}** kişi tarafından oy atıldı <@{}>".format(count,self.author))
         else:
-            await self.sendms(self.mschannel, "Bu özellik sadece yetkili kişiler tarafından kullanılabilir. <@{}>".format(self.author))
+            await self.sendms(self.mschannel, "- Bu özellik sadece yetkili kişiler tarafından kullanılabilir. <@{}>".format(self.author))
+
+    @staticmethod
+    def upvote(url):
+        post = Post(post = url, steemd_instance = STEEM)
+        voters_list = Oogg.voters(url)
+        voted = {}
+        for account in Keys.accounts:
+            username = account["username"]
+            weight = float(account["weight"])
+            if username in voters_list:
+                yield {"username":username,"status":False,"note":"already voted"}
+            else:
+                try:
+                    post.vote(weight,username)
+                    yield {"username":username,"status":True, "weight":weight, "note":"voted"}
+                except:
+                    yield {"username":username,"status":False,"note":"Unknown"}
+        if "coogger" not in Oogg.get_replies_list(post):
+            if "coogger" in post.tags:
+                Oogg.reply(title = None,body = COOGGERUP_TAG_REPLY, author = "coogger", identifier = post.identifier)
+            else:
+                Oogg.reply(title = None,body = COOGGERUP_REPLY, author = "coogger", identifier = post.identifier)
 
 class Coogger(MainInit):
 
@@ -45,12 +67,13 @@ class Coogger(MainInit):
         following_count = follow_class.get_following_count()
         not_follow_you = follow_class.not_follow_you()
         not_follow = follow_class.not_follow()
-        context = "\nfollower_count : {}\nfollowing_count : {}\nnot_follow_you : {}\nnot_follow : {}\n".format(follower_count,following_count,not_follow_you,not_follow)
+        context = "follower_count : {}\nfollowing_count : {}\nnot_follow_you : {}\nnot_follow : {}\n".format(follower_count,following_count,not_follow_you,not_follow)
         try:
             await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
         except:
-            context = "Fazla karakterden dolayı sonuç gösteremiyorum http://www.coogger.com/apps/steemitapp/search/?username={} bu adresi kullanarak sonuçları görüntüleyebilirsiniz.".format(self.mscs[1])
+            context = "Fazla karakterden dolayı sonuç gösteremiyorum {}".format(self.mscs[1])
             await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
+
     async def post(self):
         count_rshares = 0.0
         for votes_result in PostDetail.votes_by_rshares(url = self.mscs[1]):
@@ -68,32 +91,64 @@ class Coogger(MainInit):
         await self.sendms(self.mschannel, "**${}  --  ${}.SP  --  ${}.SBD**".format(round(count_rshares,4), sbd_sp["sp"],sbd_sp["sbd"]))
         await self.sendms(self.mschannel, "sonuçlar bitti <@{}>".format(self.author))
 
-    async def sbd(self):
-        context = oogg.sbd(username = self.mscs[1])
-        await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
+    async def balance(self):
+        result = EasyAccount(username = self.mscs[1]).account_balance()
+        for i in result:
+            i = str(i),(result[i])
+            await self.sendms(self.mschannel,str(i))
+        await self.sendms(self.mschannel,"<@{}>".format(self.author))
 
     async def price(self):
-        context = oogg.price()
-        await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
+        result = Oogg.price()
+        for i in result:
+            i = str(i),(result[i])
+            await self.sendms(self.mschannel,str(i))
+        await self.sendms(self.mschannel,"<@{}>".format(self.author))
+
+    async def account(self):
+        account = EasyAccount(self.mscs[1])
+        result = dict(
+        rep = account.account_rep(),
+        steem_power = account.account_sp(),
+        voting_power = account.account_voting_power(),
+        balance = account.account_balance()
+        )
+        for i in result:
+            i = str(i),(result[i])
+            await self.sendms(self.mschannel,str(i))
+        await self.sendms(self.mschannel,"<@{}>".format(self.author))
+
+    async def sp(self):
+        account = EasyAccount(self.mscs[1])
+        result = dict(
+        steem_power = account.account_sp(),
+        voting_power = account.account_voting_power(),
+        )
+        for i in result:
+            i = str(i),(result[i])
+            await self.sendms(self.mschannel,str(i))
+        await self.sendms(self.mschannel,"<@{}>".format(self.author))
 
     async def payout(self):
         ea = EasyAccount(self.mscs[1])
-        sbd_in_account = ea.sbd_in_account
+        sbd_in_account = ea.account_balance()["SBD"]
         total_sbd = sbd_in_account
         for pp in PostDetail.pending_payout(self.mscs[1]):
             await self.sendms(self.mschannel, pp)
             total_sbd += pp["sbd"]
-        context = dict(
+        result = dict(
         sbd_in_account = round(sbd_in_account,4),
         total_sbd = round(total_sbd,4),
         usd_in_account = round(ea.usd_in_account,4),
         total_usd = round(total_sbd * ea.price_sbd,4),
         )
-        await self.sendms(self.mschannel, context)
-        await self.sendms(self.mschannel, "sonuçlar bitti <@{}>".format(self.author))
+        for i in result:
+            i = str(i),(result[i])
+            await self.sendms(self.mschannel,str(i))
+        await self.sendms(self.mschannel,"<@{}>".format(self.author))
 
     async def transfer(self):
-        context = oogg.transfer(username = self.mscs[1])
+        context = Oogg.transfer(username = self.mscs[1])
         await self.sendms(self.mschannel,str(context)+" <@{}>".format(self.author))
 
     async def calculate(self):
@@ -104,7 +159,7 @@ class Coogger(MainInit):
 class Follow(MainInit):
 
     ms_is = False
-    ms = """\nMerhaba <@{}> bu kanal sadece steemit profil adresinizi paylaşabileceğiniz
+    ms = """\nMerhaba <@{}> bu kanal sadece **steemit** profil adresinizi paylaşabileceğiniz
     \nbir kanaldır örneğin:https://steemit.com/@coogger bu yüzden başka bir şey paylaşmaya çalışmayın, paylaşılan hesapları takip edin
     \nbaşkalarıda sizi takip etsin bu kadar kolay."""
 
@@ -131,7 +186,7 @@ class Follow(MainInit):
 class PostShare(MainInit):
 
     ms_is = False
-    ms = """\nMerhaba <@{}> bu kanal sadece {} etiketi bulunan postların
+    ms = """\nMerhaba <@{}> bu kanal sadece **{}** etiketi bulunan postların
     \npaylaşılması ve yardımlaşması içindir, lütfen sevdiğiniz gönderi varsa
     \nupvote atarak arkadaşlarınızı destekleyin onlarda sizi desteklesin
     \nbakın bu kadar basit.
@@ -158,3 +213,6 @@ class PostShare(MainInit):
         if self.ms_is:
             await self.client.delete_message(self.message)
             await self.sendms(self.mschannel, self.ms.format(self.author,tag))
+
+
+a = {'STEEM': 2.461, 'SBD': 6.768, 'VESTS': 207787.983}

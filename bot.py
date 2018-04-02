@@ -14,24 +14,26 @@ async def on_message(message):
     mscontent = message.content.lower()
     mscs = mscontent.split()
     author = str(message.author.id)
+    try:
+        command = mscs[0].replace("$","")
+    except:
+        command = ""
     if author != BOT_ID:
-        if mscontent.startswith("$") and str(mschannel) == "bot" or str(mschannel) == "test":
-            command = mscs[0].replace("$","")
+        if str(mschannel) == "hoşgeldin" and mscontent == "":
+            await CLIENT.send_message(mschannel, settings.WELCOME_MS.format(author))
+        if str(mschannel) == "bot" or str(mschannel) == "test":
             if command == "help":
                 await CLIENT.send_message(mschannel, settings.HELP_MS.format(author))
             else:
                 cooggerup_channel = Coogger(message = message, client = CLIENT)
                 if command in COMMANDS:
                     await eval("cooggerup_channel."+command+"()")
-        elif str(mschannel) == "hoşgeldin" and mscontent == "":
-            await CLIENT.send_message(mschannel, settings.WELCOME_MS.format(author))
-        elif str(mschannel) == "cooggerup":
+        if str(mschannel) == "cooggerup":
             if command == "cooggerup":
                 await Cooggerup(message = message, client = CLIENT).run()
-        ############# kanal kuralları ###############
-        elif str(mschannel) == "takip":
+        if str(mschannel) == "takip":
             await Follow(message = message, client = CLIENT).run()
-        elif str(mschannel) in POSTSHARE:
+        if str(mschannel) in POSTSHARE:
             await PostShare(message = message, client = CLIENT).run(tag = str(mschannel))
 
 CLIENT.run(CLIENT_ID)
