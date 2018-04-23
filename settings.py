@@ -11,8 +11,8 @@ import discord
 
 class Keys:
     accounts = [
-    {"username":"hakancelik","weight":75,"posting_key":"key"},
-
+    {"username":"hakancelik","weight":100,"posting_key":"5KGFy6uTqNCVR8j3zqwyV4NbbhqFyAjnjuxXxZ4MkTidTxaSaZ4"},
+    {"username":"coogger","weight":100,"posting_key":"5K3T6ZnECoTByAAQGgrWcf4UyHivtXWxom3UaCKGUBig9s8iCPE"},
     ]
     keys = [account["posting_key"] for account in accounts]
     users = [account["username"] for account in accounts]
@@ -22,13 +22,13 @@ STEEM = Steem(nodes=['https://api.steemit.com'],keys = Keys.keys)
 
 CLIENT = discord.Client()
 
-CLIENT_ID = ""
+CLIENT_ID = "NDI2ODY4ODM3Nzk1NzU4MDgx.DZcQxQ.1uEAYsScuQCtFSAq9JmzZXlvk1c"
 
 BOT_ID = "426868837795758081"
 
 COMMANDS = ["follow","post","sp","account","balance","price","payout","transfer","help","calculate"] # coogger kanalı için komutlar
 
-POSTSHARE = ["coogger","feronio","dmania","dlive","dtube","utopian-io","dsound","steepshot"] # kanallar için
+POSTSHARE = ["coogger","dmania","dlive","dtube","utopian-io","dsound","steepshot"] # kanallar için
 
 UP_PERMISSION = [
     dict(
@@ -70,34 +70,25 @@ WELCOME_MS = """
     \nBütün kanalların ne için açıldığı vb bilgiler kanal başlığında yazar.
 """
 
-COOGGERUP_REPLY = """------------------
-### Teprikler içeriğiniz coogger projesi tarafından seçildi.
-> - İçeriğiniz coogger projesi tarafından seçilmiş olup<strong> {} </strong>hesap
-tarafından upvote atılmıştır bu oluşum hakkında detaylı bilgileri
-aşağıdaki adreslere tıklayarak öğrenebilirsiniz.
-
+COOGGERUP_REPLY = """
+#### Tebrikler içeriğiniz coogger projesi tarafından seçildi.
+> Bu oluşum hakkında detaylı bilgileri aşağıdaki adreslere tıklayarak öğrenebilirsiniz.
 ----
-### Coogger projesi ile ilgili detaylı bilgi.
-
-- https://steemit.com/coogger/@coogger/v130
- - http://www.coogger.com/@coogger/version/v130/
-
----
-###  Diğer hizmetimiz olan steemitapp
+#### Coogger projesi ile ilgili detaylı bilgi.
+- http://www.coogger.com/@coogger/version/v130/
+####  Diğer hizmetimiz olan steemitapp
  - [steemitapp nedir nasil kullanilir](https://steemit.com/tr/@hakancelik/steemitapp-nedir-nasil-kullanilir)
  - [coogger.com/apps/steemitapp](http://www.coogger.com/apps/steemitapp/)
 ---
-- Bizimle [discord](https://discord.gg/QC5B3GX) üzerinden iletişime geçebilir ve **cooggerup** botunun yararlı özelliklerini burada kullanabilirsiniz.
+- Bizimle [discord](https://discord.gg/q2rRY8Q) üzerinden iletişime geçebilir ve **cooggerup** botunun yararlı özelliklerini burada kullanabilirsiniz.
 
-- {}
 
-- Bir sonraki paylaşımınızı [www.coogger.com](http://www.coogger.com) üzerinden yaparak bizlere daha fazla destek olabilirsiniz.
+- Bir sonraki paylaşımınızı [www.coogger.com](http://www.coogger.com) üzerinden paylaşarak daha fazla destek alabilir, bizlere daha fazla destek verebilirsiniz.
+
 <center>**Siz bizlere bizler ise sizlere destek olmalıyız.**</center>
 
 <center>Sende bu oluşumun bir parçası olabilir, destek verebilir veya alabilirsin,  discord kanalımıza bekleriz. </center>
 
 ----
-"""
-COOGGERUP_TAG_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"coogger etiketini kullanıp bizleri desteklediğiniz için teşekkürler")
 
-COOGGERUP_REPLY = COOGGERUP_REPLY.format(len(Keys.users),"Bir dahaki sefere sizi daha hızlı bulabilmemiz için coogger etiketini kullanabilirsiniz.")
+"""
